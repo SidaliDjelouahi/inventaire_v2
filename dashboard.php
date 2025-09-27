@@ -14,12 +14,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-if (!isset($conn)) {
+if (!isset($pdo)) {
     die("Erreur : la connexion à la base de données a échoué !");
 }
 
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT username, rank FROM utilisateurs WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, rank FROM utilisateurs WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
