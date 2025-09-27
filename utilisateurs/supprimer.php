@@ -2,36 +2,35 @@
 session_start();
 require_once("../includes/config.php");
 require_once("../includes/db.php");
-require_once("../includes/header.php");
-require_once("../includes/sidebar.php");
 
 // Vérifier si l’ID est fourni
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    header("Location: table.php");
+    header("Location: " . ROOT_URL . "/utilisateurs/table.php");
     exit;
 }
 
 $id = intval($_GET['id']);
-
-// Récupérer l’utilisateur
-$stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE id = ?");
-$stmt->execute([$id]);
-$utilisateur = $stmt->fetch();
-
-if (!$utilisateur) {
-    echo "<div class='alert alert-danger'>Utilisateur introuvable.</div>";
-    require_once("../includes/footer.php");
-    exit;
-}
 
 // --- Suppression après confirmation ---
 if (isset($_POST['delete_user'])) {
     $stmt = $pdo->prepare("DELETE FROM utilisateurs WHERE id=?");
     $stmt->execute([$id]);
 
-    header("Location: table.php");
+    header("Location: " . ROOT_URL . "/utilisateurs/table.php");
     exit;
 }
+
+// Récupérer l’utilisateur pour affichage dans le formulaire
+$stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE id = ?");
+$stmt->execute([$id]);
+$utilisateur = $stmt->fetch();
+
+if (!$utilisateur) {
+    die("Utilisateur introuvable.");
+}
+
+require_once("../includes/header.php");
+require_once("../includes/sidebar.php");
 ?>
 
 <!-- Colonne principale -->
@@ -44,7 +43,7 @@ if (isset($_POST['delete_user'])) {
     </div>
 
     <form method="post" class="d-flex gap-2">
-        <a href="table.php" class="btn btn-secondary">Annuler</a>
+        <a href="<?= ROOT_URL ?>/utilisateurs/table.php" class="btn btn-secondary">Annuler</a>
         <button type="submit" name="delete_user" class="btn btn-danger">
             Supprimer
         </button>

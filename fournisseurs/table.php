@@ -3,34 +3,44 @@
 session_start();
 require_once "../includes/config.php";
 require_once "../includes/db.php";
-require_once "../includes/header.php";
-require_once "../includes/sidebar.php";
 
 // --- Ajouter un fournisseur ---
+$error = "";
 if (isset($_POST['add_fournisseur'])) {
     $nom = trim($_POST['nom']);
     $adresse = trim($_POST['adresse']);
     $telephone = trim($_POST['telephone']);
 
-    if (!empty($nom)) {
+    if (empty($nom)) {
+        $error = "Le nom du fournisseur est obligatoire.";
+    } else {
         $stmt = $pdo->prepare("INSERT INTO fournisseurs (nom, adresse, telephone) VALUES (?, ?, ?)");
         $stmt->execute([$nom, $adresse, $telephone]);
+
+        // ✅ Redirection avant tout HTML
         header("Location: table.php");
         exit();
-    } else {
-        echo "<div class='alert alert-danger'>Le nom du fournisseur est obligatoire.</div>";
     }
 }
 
 // --- Récupérer les fournisseurs ---
 $stmt = $pdo->query("SELECT * FROM fournisseurs ORDER BY created_at DESC");
 $fournisseurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 
+// ❗️ Inclure le header et sidebar seulement après la logique ci-dessus
+require_once "../includes/header.php";
+require_once "../includes/sidebar.php";
+?>
 <!-- Colonne principale -->
 <div class="col-md-9 col-lg-10 p-4">
 
     <h2 class="mb-4">Gestion des fournisseurs</h2>
+
+    <!-- Affichage erreur si nom vide -->
+    <?php if (!empty($error)): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+
     <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
         <i class="bi bi-plus-circle"></i> Ajouter
     </button>

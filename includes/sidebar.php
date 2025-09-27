@@ -38,6 +38,9 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
                 <a href="<?= ROOT_URL ?>/bureaux/table.php" class="list-group-item list-group-item-action d-flex align-items-center">
                     <i class="bi bi-building-gear me-2"></i> Bureaux
                 </a>
+                <a href="<?= ROOT_URL ?>/fournisseurs/table.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <i class="bi bi-truck me-2"></i> Fournisseurs
+                </a>
             </div>
         </div>
 
@@ -45,9 +48,7 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
         <a href="<?= ROOT_URL ?>/achats/liste.php" class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="bi bi-bag-check me-2"></i> Achats
         </a>
-        <a href="<?= ROOT_URL ?>/fournisseurs/table.php" class="list-group-item list-group-item-action d-flex align-items-center">
-            <i class="bi bi-truck me-2"></i> Fournisseurs
-        </a>
+        
         <a href="<?= ROOT_URL ?>/documentation.php" class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="bi bi-journal-text me-2"></i> Documentation
         </a>

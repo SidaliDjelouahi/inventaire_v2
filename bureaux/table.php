@@ -1,10 +1,24 @@
 <?php
-// bureaux/table.php
+session_start();
+require_once "../includes/config.php";
 require_once "../includes/db.php";
-require_once "../includes/header.php";
-require_once "../includes/sidebar.php";
 
-// Récupérer les bureaux avec le service associé
+// --- Ajouter un bureau (traitement POST) ---
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['bureau'])) {
+    $bureau = trim($_POST['bureau']);
+    $id_service = intval($_POST['id_service']);
+
+    if ($bureau && $id_service) {
+        $stmt = $pdo->prepare("INSERT INTO bureaux (bureau, id_service) VALUES (?, ?)");
+        $stmt->execute([$bureau, $id_service]);
+
+        // Redirection après ajout
+        header("Location: " . ROOT_URL . "/bureaux/table.php");
+        exit();
+    }
+}
+
+// --- Récupérer les bureaux avec le service associé ---
 $sql = "SELECT b.id, b.bureau, s.nom AS service_nom
         FROM bureaux b
         JOIN services s ON b.id_service = s.id
@@ -13,21 +27,12 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $bureaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Récupérer la liste des services pour le formulaire
+// --- Récupérer la liste des services pour le formulaire ---
 $services = $pdo->query("SELECT id, nom FROM services ORDER BY nom ASC")->fetchAll(PDO::FETCH_ASSOC);
 
-// Ajouter un bureau (via POST du modal)
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['bureau'])) {
-    $bureau = trim($_POST['bureau']);
-    $id_service = intval($_POST['id_service']);
-
-    if ($bureau && $id_service) {
-        $stmt = $pdo->prepare("INSERT INTO bureaux (bureau, id_service) VALUES (?, ?)");
-        $stmt->execute([$bureau, $id_service]);
-        header("Location: table.php");
-        exit();
-    }
-}
+// --- Inclure header et sidebar après toute logique PHP ---
+require_once "../includes/header.php";
+require_once "../includes/sidebar.php";
 ?>
 
 <div class="col-md-9 col-lg-10 p-4">
@@ -60,7 +65,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['bureau'])) {
                         <a href="modifier.php?id=<?= $b['id'] ?>" class="btn btn-sm btn-warning">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <a href="supprimer.php?id=<?= $b['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ce bureau ?');">
+                        <a href="supprimer.php?id=<?= $b['id'] ?>" class="btn btn-sm btn-danger"
+                           onclick="return confirm('Supprimer ce bureau ?');">
                             <i class="bi bi-trash"></i>
                         </a>
                     </td>

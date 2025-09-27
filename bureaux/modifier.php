@@ -1,32 +1,29 @@
 <?php
-// bureaux/modifier.php
+session_start();
+require_once "../includes/config.php";
 require_once "../includes/db.php";
-require_once "../includes/header.php";
-require_once "../includes/sidebar.php";
 
-// Vérifier l'ID
+// --- Vérifier l'ID ---
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    header("Location: table.php");
+    header("Location: " . ROOT_URL . "/bureaux/table.php");
     exit();
 }
 
 $id = intval($_GET['id']);
 
-// Charger le bureau
+// --- Récupérer le bureau ---
 $stmt = $pdo->prepare("SELECT * FROM bureaux WHERE id = ?");
 $stmt->execute([$id]);
 $bureau = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$bureau) {
-    echo "<div class='alert alert-danger'>Bureau introuvable</div>";
-    require_once "../includes/footer.php";
-    exit();
+    die("<div class='alert alert-danger'>Bureau introuvable</div>");
 }
 
-// Charger les services
+// --- Récupérer les services ---
 $services = $pdo->query("SELECT id, nom FROM services ORDER BY nom ASC")->fetchAll(PDO::FETCH_ASSOC);
 
-// Mise à jour du bureau
+// --- Traitement POST pour mise à jour ---
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nom_bureau = trim($_POST['bureau']);
     $id_service = intval($_POST['id_service']);
@@ -34,16 +31,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($nom_bureau && $id_service) {
         $stmt = $pdo->prepare("UPDATE bureaux SET bureau = ?, id_service = ? WHERE id = ?");
         $stmt->execute([$nom_bureau, $id_service, $id]);
-        header("Location: table.php");
+
+        // Redirection après mise à jour
+        header("Location: " . ROOT_URL . "/bureaux/table.php");
         exit();
     } else {
-        echo "<div class='alert alert-danger'>Veuillez remplir tous les champs</div>";
+        $error_msg = "Veuillez remplir tous les champs";
     }
 }
+
+// --- Inclure header et sidebar après toute logique PHP ---
+require_once "../includes/header.php";
+require_once "../includes/sidebar.php";
 ?>
 
 <div class="col-md-9 col-lg-10 p-4">
     <h2 class="mb-4">Modifier un bureau</h2>
+
+    <?php if (!empty($error_msg)) : ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($error_msg) ?></div>
+    <?php endif; ?>
 
     <form method="post" class="card p-4">
         <div class="mb-3">

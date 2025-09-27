@@ -2,31 +2,29 @@
 session_start();
 require_once("../includes/config.php");
 require_once("../includes/db.php");
-require_once("../includes/header.php");
-require_once("../includes/sidebar.php");
 
-// Vérifier si l’ID est fourni
+// --- Vérifier si l’ID est fourni ---
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    header("Location: table.php");
+    header("Location: " . ROOT_URL . "/utilisateurs/table.php");
     exit;
 }
 
 $id = intval($_GET['id']);
 
-// Récupérer l’utilisateur depuis la base
+// --- Récupérer l’utilisateur depuis la base ---
 $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE id = ?");
 $stmt->execute([$id]);
 $utilisateur = $stmt->fetch();
 
 if (!$utilisateur) {
-    echo "<div class='alert alert-danger'>Utilisateur introuvable.</div>";
-    require_once("../includes/footer.php");
+    // Redirection si utilisateur introuvable
+    header("Location: " . ROOT_URL . "/utilisateurs/table.php");
     exit;
 }
 
 // --- Mise à jour après soumission du formulaire ---
 if (isset($_POST['edit_user'])) {
-    $username = $_POST['username'];
+    $username = trim($_POST['username']);
     $rank = $_POST['rank'];
 
     if (!empty($_POST['password'])) {
@@ -38,14 +36,18 @@ if (isset($_POST['edit_user'])) {
         $stmt->execute([$username, $rank, $id]);
     }
 
-    header("Location: table.php");
+    // --- Solution 1 : redirection avant tout HTML ---
+    header("Location: " . ROOT_URL . "/utilisateurs/table.php");
     exit;
 }
+
+// --- Inclure le header et sidebar après traitement ---
+require_once("../includes/header.php");
+require_once("../includes/sidebar.php");
 ?>
 
 <!-- Colonne principale -->
 <div class="col-md-9 col-lg-10 p-4">
-
     <h2>Modifier utilisateur</h2>
     <form method="post" class="card p-4 shadow-sm">
         <div class="mb-3">
@@ -66,7 +68,7 @@ if (isset($_POST['edit_user'])) {
             </select>
         </div>
         <div class="d-flex justify-content-between">
-            <a href="table.php" class="btn btn-secondary">Annuler</a>
+            <a href="<?= ROOT_URL ?>/utilisateurs/table.php" class="btn btn-secondary">Annuler</a>
             <button type="submit" name="edit_user" class="btn btn-primary">Enregistrer</button>
         </div>
     </form>

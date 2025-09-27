@@ -2,30 +2,51 @@
 session_start();
 require_once("../includes/config.php");
 require_once("../includes/db.php");
-require_once("../includes/header.php");
-require_once("../includes/sidebar.php");
 
 // --- Ajouter un utilisateur ---
 if (isset($_POST['add_user'])) {
-    $username = $_POST['username'];
+    $username = trim($_POST['username']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $rank = $_POST['rank'];
 
-    $stmt = $pdo->prepare("INSERT INTO utilisateurs (username, password, rank) VALUES (?, ?, ?)");
-    $stmt->execute([$username, $password, $rank]);
-    header("Location: table.php");
-    exit;
+    // Vérifier que le username n'existe pas déjà
+    $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM utilisateurs WHERE username=?");
+    $stmtCheck->execute([$username]);
+    if ($stmtCheck->fetchColumn() > 0) {
+        // Username existe déjà
+        $_SESSION['error'] = "Nom d'utilisateur déjà utilisé.";
+        // Redirection immédiate pour éviter de réexécuter le POST
+        header("Location: " . ROOT_URL . "/utilisateurs/table.php");
+        exit;
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO utilisateurs (username, password, rank) VALUES (?, ?, ?)");
+        $stmt->execute([$username, $password, $rank]);
+        // Redirection après ajout réussi
+        header("Location: " . ROOT_URL . "/utilisateurs/table.php");
+        exit;
+    }
 }
 
 // --- Récupération des utilisateurs ---
 $stmt = $pdo->query("SELECT * FROM utilisateurs ORDER BY created_at DESC");
 $utilisateurs = $stmt->fetchAll();
+
+require_once("../includes/header.php");
+require_once("../includes/sidebar.php");
 ?>
 
 <!-- Colonne principale -->
 <div class="col-md-9 col-lg-10 p-4">
-
     <h2>Gestion des utilisateurs</h2>
+
+    <?php
+    // Affichage du message d'erreur si existant
+    if (isset($_SESSION['error'])) {
+        echo "<div class='alert alert-danger'>" . htmlspecialchars($_SESSION['error']) . "</div>";
+        unset($_SESSION['error']);
+    }
+    ?>
+
     <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">+ Ajouter</button>
 
     <!-- Tableau des utilisateurs -->
@@ -40,26 +61,28 @@ $utilisateurs = $stmt->fetchAll();
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($utilisateurs as $u): ?>
-            <tr>
-                <td><?= $u['id'] ?></td>
-                <td><?= htmlspecialchars($u['username']) ?></td>
-                <td><?= $u['rank'] ?></td>
-                <td><?= $u['created_at'] ?></td>
-                <td>
-                    <!-- Lien vers modifier -->
-                    <a href="modifier.php?id=<?= $u['id'] ?>" class="btn btn-primary btn-sm">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <!-- Lien vers supprimer avec confirmation -->
-                    <a href="supprimer.php?id=<?= $u['id'] ?>" 
-                       onclick="return confirm('Voulez-vous vraiment supprimer <?= htmlspecialchars($u['username']) ?> ?');" 
-                       class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
+        <?php if ($utilisateurs): ?>
+            <?php foreach ($utilisateurs as $u): ?>
+                <tr>
+                    <td><?= $u['id'] ?></td>
+                    <td><?= htmlspecialchars($u['username']) ?></td>
+                    <td><?= htmlspecialchars($u['rank']) ?></td>
+                    <td><?= htmlspecialchars($u['created_at']) ?></td>
+                    <td>
+                        <a href="modifier.php?id=<?= $u['id'] ?>" class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="supprimer.php?id=<?= $u['id'] ?>" 
+                           onclick="return confirm('Voulez-vous vraiment supprimer <?= htmlspecialchars($u['username']) ?> ?');" 
+                           class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr><td colspan="5" class="text-center">Aucun utilisateur trouvé</td></tr>
+        <?php endif; ?>
         </tbody>
     </table>
 </div>

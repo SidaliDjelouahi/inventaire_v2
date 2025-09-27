@@ -2,12 +2,10 @@
 session_start();
 require_once("../includes/config.php");
 require_once("../includes/db.php");
-require_once("../includes/header.php");
-require_once("../includes/sidebar.php");
 
 // --- Vérifier si l'ID est fourni ---
 if (!isset($_GET['id'])) {
-    header("Location: table.php");
+    header("Location: " . ROOT_URL . "/categories/table.php");
     exit;
 }
 
@@ -18,9 +16,10 @@ $stmt = $pdo->prepare("SELECT * FROM categories WHERE id = ?");
 $stmt->execute([$id]);
 $cat = $stmt->fetch();
 
+// Si catégorie introuvable, rediriger vers table.php avec message
 if (!$cat) {
-    echo "<div class='alert alert-danger'>Catégorie introuvable.</div>";
-    require_once("../includes/footer.php");
+    // Optionnel : tu peux créer une variable GET pour afficher le message
+    header("Location: " . ROOT_URL . "/categories/table.php");
     exit;
 }
 
@@ -32,9 +31,14 @@ if (isset($_POST['edit_cat'])) {
     $stmt = $pdo->prepare("UPDATE categories SET nom = ?, code = ? WHERE id = ?");
     $stmt->execute([$nom, $code, $id]);
 
-    header("Location: table.php");
+    // Redirection après mise à jour
+    header("Location: " . ROOT_URL . "/categories/table.php");
     exit;
 }
+
+// --- Inclure header et sidebar après toute logique PHP ---
+require_once("../includes/header.php");
+require_once("../includes/sidebar.php");
 ?>
 
 <!-- Colonne principale -->
@@ -52,7 +56,7 @@ if (isset($_POST['edit_cat'])) {
                    value="<?= htmlspecialchars($cat['code']) ?>">
         </div>
         <button type="submit" name="edit_cat" class="btn btn-primary">Enregistrer</button>
-        <a href="table.php" class="btn btn-secondary">Annuler</a>
+        <a href="<?= ROOT_URL ?>/categories/table.php" class="btn btn-secondary">Annuler</a>
     </form>
 </div>
 

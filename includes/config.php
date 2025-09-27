@@ -1,6 +1,8 @@
 <?php
-// Racine du projet (système de fichiers)
-define("ROOT_PATH", __DIR__ . "/..");
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', __DIR__);
+}
 
-// Racine web (URL) → adapte si ton projet n’est pas à la racine
-define("ROOT_URL", "/inventaire_v2");
+if (!defined('ROOT_URL')) {
+    define('ROOT_URL', '/inventaire_v2'); // ou ton URL exacte
+}
