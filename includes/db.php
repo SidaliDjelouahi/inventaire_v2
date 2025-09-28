@@ -1,7 +1,7 @@
 <?php
 // Paramètres de connexion
 $host = "localhost";
-$dbname = "inventaire_v2";
+$dbname = "gestion_inventaire";
 $username = "root"; // ⚠️ changer si tu as un autre user MySQL
 $password = "";     // ⚠️ changer si ton root a un mot de passe
 

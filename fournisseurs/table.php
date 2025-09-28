@@ -41,9 +41,16 @@ require_once "../includes/sidebar.php";
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
-    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
-        <i class="bi bi-plus-circle"></i> Ajouter
-    </button>
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <input type="text" id="search" class="form-control" placeholder="Rechercher par nom, adresse ou téléphone...">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">
+                <i class="bi bi-plus-circle"></i> Ajouter
+            </button>
+        </div>
+    </div>
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
@@ -57,7 +64,7 @@ require_once "../includes/sidebar.php";
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="fournisseursTableBody">
             <?php if ($fournisseurs): ?>
                 <?php foreach ($fournisseurs as $f): ?>
                 <tr>
@@ -117,3 +124,15 @@ require_once "../includes/sidebar.php";
 </div>
 
 <?php require_once "../includes/footer.php"; ?>
+
+<!-- Script pour recherche instantanée -->
+<script>
+document.getElementById('search').addEventListener('keyup', function() {
+    const q = this.value;
+    fetch('search.php?q=' + encodeURIComponent(q))
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('fournisseursTableBody').innerHTML = data;
+        });
+});
+</script>

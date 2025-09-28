@@ -26,7 +26,7 @@ if (isset($_POST['add_categorie'])) {
 
 // --- Récupération des catégories ---
 $stmt = $pdo->query("SELECT * FROM categories ORDER BY id DESC");
-$categories = $stmt->fetchAll();
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 require_once("../includes/header.php");
 require_once("../includes/sidebar.php");
@@ -45,6 +45,11 @@ require_once("../includes/sidebar.php");
         + Ajouter
     </button>
 
+    <!-- Champ de recherche instantané -->
+    <div class="mb-3">
+        <input type="text" id="searchCategorie" class="form-control" placeholder="Rechercher une catégorie...">
+    </div>
+
     <!-- Tableau des catégories -->
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
@@ -56,7 +61,7 @@ require_once("../includes/sidebar.php");
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="categoriesTableBody">
             <?php if ($categories): ?>
                 <?php foreach ($categories as $c): ?>
                     <tr>
@@ -108,5 +113,21 @@ require_once("../includes/sidebar.php");
         </form>
     </div>
 </div>
+
+<!-- Script AJAX recherche instantanée -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const input = document.getElementById('searchCategorie');
+    input.addEventListener('keyup', function() {
+        const query = this.value;
+        // Requête AJAX vers ton search.php existant
+        fetch("search.php?q=" + encodeURIComponent(query) + "&type=categories")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('categoriesTableBody').innerHTML = data;
+            });
+    });
+});
+</script>
 
 <?php require_once("../includes/footer.php"); ?>

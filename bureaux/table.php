@@ -43,6 +43,11 @@ require_once "../includes/sidebar.php";
         <i class="bi bi-plus-circle"></i> Ajouter un bureau
     </button>
 
+    <!-- Champ de recherche instantané -->
+    <div class="mb-3">
+        <input type="text" id="searchBureau" class="form-control" placeholder="Rechercher un bureau ou un service...">
+    </div>
+
     <!-- Tableau -->
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
@@ -54,7 +59,7 @@ require_once "../includes/sidebar.php";
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="bureauxTableBody">
             <?php if ($bureaux): ?>
                 <?php foreach ($bureaux as $b): ?>
                 <tr>
@@ -114,5 +119,21 @@ require_once "../includes/sidebar.php";
     </div>
   </div>
 </div>
+
+<!-- Script AJAX recherche instantanée -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const input = document.getElementById('searchBureau');
+    input.addEventListener('keyup', function() {
+        const query = this.value;
+        // Requête AJAX vers ton search.php existant
+        fetch("search.php?q=" + encodeURIComponent(query) + "&type=bureaux")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('bureauxTableBody').innerHTML = data;
+            });
+    });
+});
+</script>
 
 <?php require_once "../includes/footer.php"; ?>

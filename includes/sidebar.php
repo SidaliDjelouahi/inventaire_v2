@@ -29,7 +29,7 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
                 <a href="<?= ROOT_URL ?>/unites/table.php" class="list-group-item list-group-item-action d-flex align-items-center">
                     <i class="bi bi-bounding-box me-2"></i> Unités
                 </a>
-                <a href="<?= ROOT_URL ?>/produits/liste.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                <a href="<?= ROOT_URL ?>/produits/table.php" class="list-group-item list-group-item-action d-flex align-items-center">
                     <i class="bi bi-box me-2"></i> Produits
                 </a>
                 <a href="<?= ROOT_URL ?>/services/table.php" class="list-group-item list-group-item-action d-flex align-items-center">
@@ -44,11 +44,24 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
             </div>
         </div>
 
-        <!-- Autres menus -->
-        <a href="<?= ROOT_URL ?>/achats/liste.php" class="list-group-item list-group-item-action d-flex align-items-center">
-            <i class="bi bi-bag-check me-2"></i> Achats
+        <!-- Menu Achats (Collapse) -->
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           data-bs-toggle="collapse" href="#collapseAchats" role="button" aria-expanded="false" aria-controls="collapseAchats">
+            <span><i class="bi bi-bag-check me-2"></i> Achats</span>
+            <i class="bi bi-caret-down"></i>
         </a>
-        
+        <div class="collapse" id="collapseAchats">
+            <div class="list-group ms-3">
+                <a href="<?= ROOT_URL ?>/achats/bon.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <i class="bi bi-plus-circle me-2"></i> Bon d'achat
+                </a>
+                <a href="<?= ROOT_URL ?>/achats/historique.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <i class="bi bi-clock-history me-2"></i> Historique achats
+                </a>
+            </div>
+        </div>
+
+        <!-- Autres menus -->
         <a href="<?= ROOT_URL ?>/documentation.php" class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="bi bi-journal-text me-2"></i> Documentation
         </a>

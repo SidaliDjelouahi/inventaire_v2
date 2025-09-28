@@ -38,34 +38,41 @@ require_once("../includes/sidebar.php");
 
     <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">+ Ajouter</button>
 
+    <!-- Champ de recherche -->
+    <div class="mb-3">
+        <input type="text" id="search" class="form-control" placeholder="Rechercher une unité...">
+    </div>
+
     <!-- Tableau des unités -->
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($unites as $u): ?>
-            <tr>
-                <td><?= $u['id'] ?></td>
-                <td><?= htmlspecialchars($u['nom']) ?></td>
-                <td>
-                    <a href="modifier.php?id=<?= $u['id'] ?>" class="btn btn-primary btn-sm">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <a href="supprimer.php?id=<?= $u['id'] ?>" 
-                       onclick="return confirm('Voulez-vous vraiment supprimer l’unité <?= htmlspecialchars($u['nom']) ?> ?');" 
-                       class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+    <div class="table-responsive" id="unitesTable">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($unites as $u): ?>
+                <tr>
+                    <td><?= $u['id'] ?></td>
+                    <td><?= htmlspecialchars($u['nom']) ?></td>
+                    <td>
+                        <a href="modifier.php?id=<?= $u['id'] ?>" class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="supprimer.php?id=<?= $u['id'] ?>" 
+                           onclick="return confirm('Voulez-vous vraiment supprimer l’unité <?= htmlspecialchars($u['nom']) ?> ?');" 
+                           class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Modal Ajouter -->
@@ -89,5 +96,20 @@ require_once("../includes/sidebar.php");
         </form>
     </div>
 </div>
+
+<!-- Script AJAX recherche -->
+<script>
+document.getElementById('search').addEventListener('keyup', function(){
+    let query = this.value;
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'search.php?q=' + encodeURIComponent(query), true);
+    xhr.onload = function(){
+        if (this.status === 200) {
+            document.getElementById('unitesTable').innerHTML = this.responseText;
+        }
+    };
+    xhr.send();
+});
+</script>
 
 <?php require_once("../includes/footer.php"); ?>

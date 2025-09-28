@@ -19,7 +19,7 @@ if (isset($_POST['add_service'])) {
     }
 }
 
-// --- Récupération des services ---
+// --- Récupération des services (initial) ---
 $services = $pdo->query("SELECT * FROM services ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
 
 // --- Inclure header et sidebar après toute logique PHP ---
@@ -38,8 +38,13 @@ require_once("../includes/sidebar.php");
         + Ajouter
     </button>
 
+    <!-- Champ de recherche -->
+    <div class="mb-3">
+        <input type="text" id="search" class="form-control" placeholder="Rechercher un service...">
+    </div>
+
     <!-- Tableau des services -->
-    <div class="table-responsive">
+    <div class="table-responsive" id="servicesTable">
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
                 <tr>
@@ -95,5 +100,20 @@ require_once("../includes/sidebar.php");
         </form>
     </div>
 </div>
+
+<!-- Script AJAX recherche -->
+<script>
+document.getElementById('search').addEventListener('keyup', function(){
+    let query = this.value;
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'search.php?q=' + encodeURIComponent(query), true);
+    xhr.onload = function(){
+        if (this.status === 200) {
+            document.getElementById('servicesTable').innerHTML = this.responseText;
+        }
+    };
+    xhr.send();
+});
+</script>
 
 <?php require_once("../includes/footer.php"); ?>

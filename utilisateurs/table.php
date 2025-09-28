@@ -13,21 +13,18 @@ if (isset($_POST['add_user'])) {
     $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM utilisateurs WHERE username=?");
     $stmtCheck->execute([$username]);
     if ($stmtCheck->fetchColumn() > 0) {
-        // Username existe déjà
         $_SESSION['error'] = "Nom d'utilisateur déjà utilisé.";
-        // Redirection immédiate pour éviter de réexécuter le POST
         header("Location: " . ROOT_URL . "/utilisateurs/table.php");
         exit;
     } else {
         $stmt = $pdo->prepare("INSERT INTO utilisateurs (username, password, rank) VALUES (?, ?, ?)");
         $stmt->execute([$username, $password, $rank]);
-        // Redirection après ajout réussi
         header("Location: " . ROOT_URL . "/utilisateurs/table.php");
         exit;
     }
 }
 
-// --- Récupération des utilisateurs ---
+// --- Récupération initiale des utilisateurs ---
 $stmt = $pdo->query("SELECT * FROM utilisateurs ORDER BY created_at DESC");
 $utilisateurs = $stmt->fetchAll();
 
@@ -40,7 +37,6 @@ require_once("../includes/sidebar.php");
     <h2>Gestion des utilisateurs</h2>
 
     <?php
-    // Affichage du message d'erreur si existant
     if (isset($_SESSION['error'])) {
         echo "<div class='alert alert-danger'>" . htmlspecialchars($_SESSION['error']) . "</div>";
         unset($_SESSION['error']);
@@ -49,42 +45,49 @@ require_once("../includes/sidebar.php");
 
     <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">+ Ajouter</button>
 
+    <!-- Champ recherche -->
+    <div class="mb-3">
+        <input type="text" id="search" class="form-control" placeholder="Rechercher un utilisateur...">
+    </div>
+
     <!-- Tableau des utilisateurs -->
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Nom d’utilisateur</th>
-                <th>Rang</th>
-                <th>Date création</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php if ($utilisateurs): ?>
-            <?php foreach ($utilisateurs as $u): ?>
+    <div id="usersTable">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
                 <tr>
-                    <td><?= $u['id'] ?></td>
-                    <td><?= htmlspecialchars($u['username']) ?></td>
-                    <td><?= htmlspecialchars($u['rank']) ?></td>
-                    <td><?= htmlspecialchars($u['created_at']) ?></td>
-                    <td>
-                        <a href="modifier.php?id=<?= $u['id'] ?>" class="btn btn-primary btn-sm">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <a href="supprimer.php?id=<?= $u['id'] ?>" 
-                           onclick="return confirm('Voulez-vous vraiment supprimer <?= htmlspecialchars($u['username']) ?> ?');" 
-                           class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
+                    <th>ID</th>
+                    <th>Nom d’utilisateur</th>
+                    <th>Rang</th>
+                    <th>Date création</th>
+                    <th>Actions</th>
                 </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr><td colspan="5" class="text-center">Aucun utilisateur trouvé</td></tr>
-        <?php endif; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            <?php if ($utilisateurs): ?>
+                <?php foreach ($utilisateurs as $u): ?>
+                    <tr>
+                        <td><?= $u['id'] ?></td>
+                        <td><?= htmlspecialchars($u['username']) ?></td>
+                        <td><?= htmlspecialchars($u['rank']) ?></td>
+                        <td><?= htmlspecialchars($u['created_at']) ?></td>
+                        <td>
+                            <a href="modifier.php?id=<?= $u['id'] ?>" class="btn btn-primary btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="supprimer.php?id=<?= $u['id'] ?>" 
+                               onclick="return confirm('Voulez-vous vraiment supprimer <?= htmlspecialchars($u['username']) ?> ?');" 
+                               class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr><td colspan="5" class="text-center">Aucun utilisateur trouvé</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Modal Ajouter -->
@@ -120,5 +123,20 @@ require_once("../includes/sidebar.php");
         </form>
     </div>
 </div>
+
+<!-- Script AJAX recherche -->
+<script>
+document.getElementById('search').addEventListener('keyup', function() {
+    const q = this.value;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'search.php?q=' + encodeURIComponent(q), true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            document.getElementById('usersTable').innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+});
+</script>
 
 <?php require_once("../includes/footer.php"); ?>
