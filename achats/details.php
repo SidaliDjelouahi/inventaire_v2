@@ -33,15 +33,22 @@ $sqlDetails = "
 SELECT ad.id AS id_detail,
        ad.id_produit,
        p.nom AS produit_nom,
+       p.type AS produit_type,
        ad.quantite,
-       ad.prix_achat
+       ad.prix_achat,
+       COUNT(i.id) AS inventaire_count
 FROM achats_details ad
 LEFT JOIN produits p ON ad.id_produit=p.id
+LEFT JOIN inventaire i ON i.id_achats_details = ad.id
 WHERE ad.id_achat=?
+GROUP BY ad.id, ad.id_produit, p.nom, p.type, ad.quantite, ad.prix_achat
 ";
+
 $stmt = $pdo->prepare($sqlDetails);
 $stmt->execute([$id_achat]);
 $details = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -108,11 +115,23 @@ $details = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td><?= htmlspecialchars($det['quantite']) ?></td>
               <td><?= number_format($det['prix_achat'],2,',',' ') ?> DA</td>
               <td>
-                <!-- Bouton inventorier -->
-                <a href="../inventaires/inventorer.php?id_achats_details=<?= urlencode($det['id_detail']) ?>&id_produit=<?= urlencode($det['id_produit']) ?>" 
-                   class="btn btn-sm btn-primary">
-                   <i class="bi bi-box-seam"></i> Inventorier
-                </a>
+                <?php 
+                // conditions : type inventoree, prix > 3000
+                if ($det['produit_type'] === 'inventoree' && $det['prix_achat'] > 3000):
+                    // vérif si quantité déjà inventoriée
+                    if ($det['inventaire_count'] >= $det['quantite']): ?>
+                      <!-- bouton désactivé Inventaire fait -->
+                      <button class="btn btn-sm btn-secondary" disabled>
+                        <i class="bi bi-check-circle"></i> Inventaire fait
+                      </button>
+                    <?php else: ?>
+                      <!-- bouton inventorier actif -->
+                      <a href="../inventaires/inventorer.php?id_achats_details=<?= urlencode($det['id_detail']) ?>&id_produit=<?= urlencode($det['id_produit']) ?>" 
+                         class="btn btn-sm btn-primary">
+                         <i class="bi bi-box-seam"></i> Inventorier
+                      </a>
+                    <?php endif;
+                endif; ?>
 
                 <!-- Bouton supprimer -->
                 <a href="supprimer_produit.php?id=<?= urlencode($det['id_detail']) ?>" 
@@ -124,6 +143,9 @@ $details = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tr>
           <?php endforeach; ?>
           </tbody>
+            
+
+
         </table>
       </div>
 
