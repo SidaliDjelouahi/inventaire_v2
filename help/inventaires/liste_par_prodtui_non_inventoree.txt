@@ -1,0 +1,15 @@
+On a ici trois éléments à articuler :
+
+Ta table produits a un champ stock_initial.
+
+Ta table inventaire enregistre les pièces inventoriées. Quand id_achats_details=0, cela signifie que la pièce inventoriée provient du stock initial.
+
+Ton tableau dans liste_par_produit_non_inventoree.php affiche actuellement les achats + inventaire, mais ne tient pas compte du stock initial.
+
+📝 Ce qu’on veut
+
+Afficher dans ton tableau une ligne supplémentaire correspondant au stock initial.
+
+Calculer pour cette ligne la quantité inventoriée (dans inventaire) où id_achats_details=0 et id_produit est celui du produit en cours.
+
+Calculer ensuite la quantité restante = stock_initial - quantité inventoriée.

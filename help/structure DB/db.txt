@@ -1,0 +1,30 @@
+je veux analyser une architecture de base de donnees qui gerer l'inventaire d'una administration etatiques : les tables sont : 
+
+	1- table utilisateurs ( id, username, password, rank, created_at) 
+	2- table categories(id,nom,code) ,
+	3-table services (id, nom)
+	3- table bureaux(id, id_service, bureau), 
+	4- table fournisseurs(id,nom,adresse,telephone,created_at), 
+	5- table unites(id,nom), 
+	6- table produits(id, code, nom, id_categorie, type (enum : consommable , inventoree),id_unite, stock_initial ),
+		- stock inital nous permet de commencer le calcul de fiche de stock ensuite il s'ajoute avec achat et diminue avec decharge
+		- pour regle la fiche il suffit de regle le stock initial
+		- quand on supprime un achat ou decharge tout sera recalcule parceque stock actuel est dynamique
+	7- table achats (id, num_achat, date datetime, id_fournisseur) , 
+	8- table achats_details ( id, id_achat, id_produit, prix_achat, quantite, date_peremption) , 
+	9- table inventaire (id,id_achat, id_produit, num_inventaire, sn, etat ,date_entree)
+		- id_inventaire est la cle du num_inventaire , on peux suivre l'evolution du num_inventaire du stock a decharge a reparation a trasfert a reforme en suivant id_inventaire en datetime dans tout les mouvements cree  
+		- id_produit dans tout les tables forme en datetime  fiche de stock
+		-table id_inventaire forme le registre
+		- on a ajouter etat pour pouvoir separe decharge qui sera en instance jusqu'a ce que la fiche d'inventaire soit valide par decharge ce qui modifie etat a valide apres qu'elle etait a stock
+		-dans l'etape de l'inventaire d'un bon d'achat on consulte le stock non inventoree si il est superieur a la quantite dans le bon d'achat on met un message alerte qu'il y aun stock non inventoree on doit commencer avec avant de passer au bon d'achat
+	10- table decharges ( id , num_decharge, date datetime, id_service, id_bureau, id_produit, quantite, id_inventaire)
+		- on sauvegarde id_inventaire pour pouvoir modifier num_inventaire sans effecter l'historique
+
+
+
+		actions : 
+		excel 
+		imprimer
+
+

@@ -19,7 +19,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Charger infos utilisateur
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT username, rank FROM utilisateurs WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, rank FROM utilisateurs WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 

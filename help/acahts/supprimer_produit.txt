@@ -1,0 +1,3 @@
+faire exactement le même contrôle pour la suppression d’un seul détail d’achat (et non plus du bon complet) :
+
+Avant de supprimer la ligne achats_details, vérifier si elle concerne un produit inventoree et s’il y a des inventaires liés → afficher un message de confirmation avant suppression.

@@ -61,6 +61,47 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
             </div>
         </div>
 
+        <!-- Menu Inventaire (Collapse) -->
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           data-bs-toggle="collapse" href="#collapseInventaire" role="button" aria-expanded="false" aria-controls="collapseInventaire">
+            <span><i class="bi bi-clipboard-data me-2"></i> Inventaire</span>
+            <i class="bi bi-caret-down"></i>
+        </a>
+        <div class="collapse" id="collapseInventaire">
+            <div class="list-group ms-3">
+                <a href="<?= ROOT_URL ?>/inventaires/table.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <i class="bi bi-journal me-2"></i> Registre d'inventaire
+                </a>
+                <a href="<?= ROOT_URL ?>/inventaires/fiche.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <i class="bi bi-file-earmark-text me-2"></i> Fiche d'inventaire
+                </a>
+                <!-- 👇 nouveau lien -->
+                <a href="<?= ROOT_URL ?>/inventaires/liste_tout_produits_non_inventoree.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <i class="bi bi-exclamation-circle me-2"></i> Produits non inventoriés
+                </a>
+            </div>
+        </div>
+
+
+
+        <!-- Menu Décharges (Collapse) -->
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           data-bs-toggle="collapse" href="#collapseDecharges" role="button" aria-expanded="false" aria-controls="collapseDecharges">
+            <span><i class="bi bi-box-arrow-down me-2"></i> Décharges</span>
+            <i class="bi bi-caret-down"></i>
+        </a>
+        <div class="collapse" id="collapseDecharges">
+            <div class="list-group ms-3">
+                <a href="<?= ROOT_URL ?>/decharges/bon.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <i class="bi bi-plus-circle me-2"></i> Bon de décharge
+                </a>
+                <a href="<?= ROOT_URL ?>/decharges/historique.php" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <i class="bi bi-clock-history me-2"></i> Historique décharges
+                </a>
+            </div>
+        </div>
+
+
         <!-- Autres menus -->
         <a href="<?= ROOT_URL ?>/documentation.php" class="list-group-item list-group-item-action d-flex align-items-center">
             <i class="bi bi-journal-text me-2"></i> Documentation

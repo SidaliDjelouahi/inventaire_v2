@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 28 sep. 2025 à 13:25
+-- Généré le : ven. 03 oct. 2025 à 10:46
 -- Version du serveur : 10.4.28-MariaDB
 -- Version de PHP : 8.0.28
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `inventaire_v2`
+-- Base de données : `gestion_inventaire`
 --
 
 -- --------------------------------------------------------
@@ -27,7 +27,6 @@ SET time_zone = "+00:00";
 -- Structure de la table `achats`
 --
 
-DROP TABLE IF EXISTS `achats`;
 CREATE TABLE `achats` (
   `id` int(11) NOT NULL,
   `num_achat` varchar(50) DEFAULT NULL,
@@ -41,7 +40,6 @@ CREATE TABLE `achats` (
 -- Structure de la table `achats_details`
 --
 
-DROP TABLE IF EXISTS `achats_details`;
 CREATE TABLE `achats_details` (
   `id` int(11) NOT NULL,
   `id_achat` int(11) NOT NULL,
@@ -57,7 +55,6 @@ CREATE TABLE `achats_details` (
 -- Structure de la table `bureaux`
 --
 
-DROP TABLE IF EXISTS `bureaux`;
 CREATE TABLE `bureaux` (
   `id` int(11) NOT NULL,
   `id_service` int(11) NOT NULL,
@@ -70,7 +67,6 @@ CREATE TABLE `bureaux` (
 -- Structure de la table `categories`
 --
 
-DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `nom` varchar(100) NOT NULL,
@@ -83,16 +79,24 @@ CREATE TABLE `categories` (
 -- Structure de la table `decharges`
 --
 
-DROP TABLE IF EXISTS `decharges`;
 CREATE TABLE `decharges` (
   `id` int(11) NOT NULL,
-  `num_decharge` varchar(50) DEFAULT NULL,
-  `date` datetime NOT NULL,
-  `id_service` int(11) NOT NULL,
-  `id_bureau` int(11) NOT NULL,
-  `id_produit` int(11) DEFAULT NULL,
-  `quantite` decimal(10,2) NOT NULL,
-  `id_inventaire` int(11) DEFAULT NULL
+  `num_decharge` varchar(50) NOT NULL,
+  `date` datetime NOT NULL DEFAULT current_timestamp(),
+  `id_bureau` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `decharges_details`
+--
+
+CREATE TABLE `decharges_details` (
+  `id` int(11) NOT NULL,
+  `id_decharge` int(11) NOT NULL,
+  `id_produit` int(11) NOT NULL,
+  `quantite` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -101,7 +105,6 @@ CREATE TABLE `decharges` (
 -- Structure de la table `fournisseurs`
 --
 
-DROP TABLE IF EXISTS `fournisseurs`;
 CREATE TABLE `fournisseurs` (
   `id` int(11) NOT NULL,
   `nom` varchar(150) NOT NULL,
@@ -116,13 +119,24 @@ CREATE TABLE `fournisseurs` (
 -- Structure de la table `inventaire`
 --
 
-DROP TABLE IF EXISTS `inventaire`;
 CREATE TABLE `inventaire` (
   `id` int(11) NOT NULL,
-  `id_achat` int(11) DEFAULT NULL,
-  `id_produit` int(11) NOT NULL,
-  `num_inventaire` varchar(100) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp()
+  `id_achats_details` int(11) NOT NULL,
+  `inventaire` varchar(30) NOT NULL,
+  `sn` varchar(30) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `inventaire_etat`
+--
+
+CREATE TABLE `inventaire_etat` (
+  `id` int(11) NOT NULL,
+  `id_inventaire` int(11) NOT NULL,
+  `etat` varchar(50) NOT NULL,
+  `id_action` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -131,7 +145,6 @@ CREATE TABLE `inventaire` (
 -- Structure de la table `produits`
 --
 
-DROP TABLE IF EXISTS `produits`;
 CREATE TABLE `produits` (
   `id` int(11) NOT NULL,
   `code` varchar(50) DEFAULT NULL,
@@ -148,7 +161,6 @@ CREATE TABLE `produits` (
 -- Structure de la table `services`
 --
 
-DROP TABLE IF EXISTS `services`;
 CREATE TABLE `services` (
   `id` int(11) NOT NULL,
   `nom` varchar(100) NOT NULL
@@ -160,7 +172,6 @@ CREATE TABLE `services` (
 -- Structure de la table `unites`
 --
 
-DROP TABLE IF EXISTS `unites`;
 CREATE TABLE `unites` (
   `id` int(11) NOT NULL,
   `nom` varchar(50) NOT NULL
@@ -172,7 +183,6 @@ CREATE TABLE `unites` (
 -- Structure de la table `utilisateurs`
 --
 
-DROP TABLE IF EXISTS `utilisateurs`;
 CREATE TABLE `utilisateurs` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
@@ -189,42 +199,40 @@ CREATE TABLE `utilisateurs` (
 -- Index pour la table `achats`
 --
 ALTER TABLE `achats`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `num_achat` (`num_achat`),
-  ADD KEY `id_fournisseur` (`id_fournisseur`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `achats_details`
 --
 ALTER TABLE `achats_details`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_achat` (`id_achat`),
-  ADD KEY `id_produit` (`id_produit`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `bureaux`
 --
 ALTER TABLE `bureaux`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_service` (`id_service`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `categories`
 --
 ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `code` (`code`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `decharges`
 --
 ALTER TABLE `decharges`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `num_decharge` (`num_decharge`),
-  ADD KEY `id_service` (`id_service`),
-  ADD KEY `id_bureau` (`id_bureau`),
-  ADD KEY `id_produit` (`id_produit`),
-  ADD KEY `id_inventaire` (`id_inventaire`);
+  ADD KEY `id_bureau` (`id_bureau`);
+
+--
+-- Index pour la table `decharges_details`
+--
+ALTER TABLE `decharges_details`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_decharge` (`id_decharge`),
+  ADD KEY `id_produit` (`id_produit`);
 
 --
 -- Index pour la table `fournisseurs`
@@ -237,20 +245,20 @@ ALTER TABLE `fournisseurs`
 --
 ALTER TABLE `inventaire`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `num_inventaire` (`num_inventaire`),
-  ADD KEY `id_achat` (`id_achat`),
-  ADD KEY `id_produit` (`id_produit`);
+  ADD KEY `idx_id_achats_details` (`id_achats_details`);
+
+--
+-- Index pour la table `inventaire_etat`
+--
+ALTER TABLE `inventaire_etat`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_inventaire_etat_inventaire` (`id_inventaire`);
 
 --
 -- Index pour la table `produits`
 --
 ALTER TABLE `produits`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `produits_nom_unique` (`nom`),
-  ADD UNIQUE KEY `code` (`code`),
-  ADD UNIQUE KEY `code_2` (`code`),
-  ADD KEY `id_categorie` (`id_categorie`),
-  ADD KEY `id_unite` (`id_unite`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `services`
@@ -268,8 +276,7 @@ ALTER TABLE `unites`
 -- Index pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -306,6 +313,12 @@ ALTER TABLE `decharges`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `decharges_details`
+--
+ALTER TABLE `decharges_details`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `fournisseurs`
 --
 ALTER TABLE `fournisseurs`
@@ -315,6 +328,12 @@ ALTER TABLE `fournisseurs`
 -- AUTO_INCREMENT pour la table `inventaire`
 --
 ALTER TABLE `inventaire`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `inventaire_etat`
+--
+ALTER TABLE `inventaire_etat`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -346,46 +365,29 @@ ALTER TABLE `utilisateurs`
 --
 
 --
--- Contraintes pour la table `achats`
---
-ALTER TABLE `achats`
-  ADD CONSTRAINT `achats_ibfk_1` FOREIGN KEY (`id_fournisseur`) REFERENCES `fournisseurs` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `achats_details`
---
-ALTER TABLE `achats_details`
-  ADD CONSTRAINT `achats_details_ibfk_1` FOREIGN KEY (`id_achat`) REFERENCES `achats` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `achats_details_ibfk_2` FOREIGN KEY (`id_produit`) REFERENCES `produits` (`id`) ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `bureaux`
---
-ALTER TABLE `bureaux`
-  ADD CONSTRAINT `bureaux_ibfk_1` FOREIGN KEY (`id_service`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Contraintes pour la table `decharges`
 --
 ALTER TABLE `decharges`
-  ADD CONSTRAINT `decharges_ibfk_1` FOREIGN KEY (`id_service`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `decharges_ibfk_2` FOREIGN KEY (`id_bureau`) REFERENCES `bureaux` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `decharges_ibfk_3` FOREIGN KEY (`id_produit`) REFERENCES `produits` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `decharges_ibfk_4` FOREIGN KEY (`id_inventaire`) REFERENCES `inventaire` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `decharges_ibfk_1` FOREIGN KEY (`id_bureau`) REFERENCES `bureaux` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `decharges_details`
+--
+ALTER TABLE `decharges_details`
+  ADD CONSTRAINT `decharges_details_ibfk_1` FOREIGN KEY (`id_decharge`) REFERENCES `decharges` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `decharges_details_ibfk_2` FOREIGN KEY (`id_produit`) REFERENCES `produits` (`id`);
 
 --
 -- Contraintes pour la table `inventaire`
 --
 ALTER TABLE `inventaire`
-  ADD CONSTRAINT `inventaire_ibfk_1` FOREIGN KEY (`id_achat`) REFERENCES `achats` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `inventaire_ibfk_2` FOREIGN KEY (`id_produit`) REFERENCES `produits` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_inventaire_achats_details` FOREIGN KEY (`id_achats_details`) REFERENCES `achats_details` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `produits`
+-- Contraintes pour la table `inventaire_etat`
 --
-ALTER TABLE `produits`
-  ADD CONSTRAINT `produits_ibfk_1` FOREIGN KEY (`id_categorie`) REFERENCES `categories` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `produits_ibfk_2` FOREIGN KEY (`id_unite`) REFERENCES `unites` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `inventaire_etat`
+  ADD CONSTRAINT `fk_inventaire_etat_inventaire` FOREIGN KEY (`id_inventaire`) REFERENCES `inventaire` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

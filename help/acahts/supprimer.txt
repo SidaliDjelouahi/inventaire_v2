@@ -1,0 +1,15 @@
+Ce que  fait
+
+Compter le nombre de produits inventoree liés à ce bon d’achat.
+
+Si >0, afficher une page avec un message d’alerte + bouton “Confirmer la suppression” + bouton “Annuler”.
+
+Si l’utilisateur confirme, supprimer :
+
+les enregistrements dans inventaire_etat liés aux inventaires de ces produits,
+
+les enregistrements dans inventaire eux-mêmes,
+
+les achats_details,
+
+et enfin l’en-tête dans achats

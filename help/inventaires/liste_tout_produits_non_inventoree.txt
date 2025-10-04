@@ -1,0 +1,39 @@
+On va construire le fichier inventaires/liste_tout_produits_non_inventoree.php pour :
+
+Lister tous les produits
+
+Calculer la quantité restante non inventoriée =
+stock_initial + achats - inventorié
+
+Recherche instantanée AJAX par nom/code produit
+
+Bouton détails qui redirige vers liste_par_produit_non_inventoree.php?id_produit=...
+
+=======================================================
+
+Logique SQL
+
+Somme des quantités achetées : SUM(ad.quantite) depuis achats_details par produit.
+
+Somme des inventaires : COUNT(i.id) (ou SUM(...) si quantités) depuis inventaire (lié à achats_details → produits).
+
+On obtient la balance ainsi :
+
+SELECT 
+  p.id AS id_produit,
+  p.code,
+  p.nom,
+  p.stock_initial
+  + IFNULL(SUM(ad.quantite),0)
+    - IFNULL(SUM(inv_qte.qte_inventoree),0) AS qte_restante
+FROM produits p
+LEFT JOIN achats_details ad ON ad.id_produit = p.id
+LEFT JOIN (
+    SELECT a.id_produit, COUNT(i.id) AS qte_inventoree
+    FROM inventaire i
+    INNER JOIN achats_details a ON a.id = i.id_achats_details
+    GROUP BY a.id_produit
+) AS inv_qte ON inv_qte.id_produit = p.id
+GROUP BY p.id
+HAVING qte_restante > 0
+ORDER BY qte_restante DESC
