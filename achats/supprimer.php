@@ -89,7 +89,7 @@ $nbInventoree = $row['nb_inventoree'] ?? 0;
                 </div>
                 <script>
                     setTimeout(function(){
-                        window.location.href = "achats/historique.php";
+                        window.location.href = "historique.php";
                     }, 2000); // 2 secondes
                 </script>
             <?php elseif ($nbInventoree > 0): ?>
@@ -102,7 +102,7 @@ $nbInventoree = $row['nb_inventoree'] ?? 0;
                     <button type="submit" name="confirm_suppression" class="btn btn-danger">
                         Confirmer la suppression
                     </button>
-                    <a href="liste_achats.php" class="btn btn-secondary">Annuler</a>
+                    <a href="historique.php" class="btn btn-secondary">Annuler</a>
                 </form>
             <?php else: ?>
                 <?php
