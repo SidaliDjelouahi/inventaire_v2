@@ -52,7 +52,6 @@ $stmt->execute($params);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -75,7 +74,6 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <span class="input-group-text"><i class="bi bi-search"></i></span>
               <input type="text" id="search" class="form-control" placeholder="Rechercher...">
             </div>
-
 
             <!-- Tableau -->
             <div class="table-responsive">
@@ -101,8 +99,13 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                       <a href="details_inventaire.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-primary">
                                           <i class="bi bi-eye"></i> Détails
                                       </a>
-                                    </td>
 
+                                      <a href="supprimer_inventaire.php?id=<?= urlencode($row['id']) ?>" 
+                                         class="btn btn-sm btn-danger"
+                                         onclick="return confirm('Supprimer cet inventaire ?');">
+                                          <i class="bi bi-trash"></i> Supprimer
+                                      </a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -110,16 +113,17 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td colspan="5" class="text-center">Aucun enregistrement trouvé</td>
                             </tr>
                         <?php endif; ?>
-                        </tbody>
-
-
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
 $(document).ready(function(){
     function charger(search='') {
@@ -128,40 +132,16 @@ $(document).ready(function(){
         });
     }
 
-    // Charger dès l’ouverture
-    charger();
-
-    // Recherche en direct
-    $('#search').on('keyup', function(){
-        let val = $(this).val();
-        charger(val);
-    });
-});
-</script>
-<script>
-$(document).ready(function(){
-    // Fonction pour charger les résultats
-    function charger(search='') {
-        $.get('ajax_inventaire.php', {search: search}, function(data){
-            $('#resultat').html(data);
-        });
-    }
-
-    // Charger dès l’ouverture
-    charger();
-
-    // Déclenchement avec délai
+    // Recherche avec délai
     let timer = null;
     $('#search').on('input', function(){
         clearTimeout(timer);
         let val = $(this).val();
         timer = setTimeout(function(){
             charger(val);
-        }, 300); // 300 ms après la dernière frappe
+        }, 300);
     });
 });
 </script>
-
-
 </body>
 </html>

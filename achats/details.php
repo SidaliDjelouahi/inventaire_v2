@@ -78,6 +78,12 @@ $details = $stmt->fetchAll(PDO::FETCH_ASSOC);
            class="btn btn-success">
           <i class="bi bi-box-seam"></i> Inventorier tout
         </a>
+        <a href="supprimer_inventaire_achat.php?id=<?= urlencode($achat['id']) ?>" 
+           class="btn btn-warning"
+           onclick="return confirm('Supprimer tous les inventaires liés à ce bon ?');">
+          <i class="bi bi-x-circle"></i> Supprimer les inventaires
+        </a>
+
         <a href="historique.php" class="btn btn-secondary">← Retour</a>
       </div>
 
