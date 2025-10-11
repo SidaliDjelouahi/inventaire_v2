@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 03 oct. 2025 à 10:46
+-- Généré le : ven. 10 oct. 2025 à 22:22
 -- Version du serveur : 10.4.28-MariaDB
 -- Version de PHP : 8.0.28
 
@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `achats`
 --
 
+DROP TABLE IF EXISTS `achats`;
 CREATE TABLE `achats` (
   `id` int(11) NOT NULL,
   `num_achat` varchar(50) DEFAULT NULL,
@@ -40,6 +41,7 @@ CREATE TABLE `achats` (
 -- Structure de la table `achats_details`
 --
 
+DROP TABLE IF EXISTS `achats_details`;
 CREATE TABLE `achats_details` (
   `id` int(11) NOT NULL,
   `id_achat` int(11) NOT NULL,
@@ -55,6 +57,7 @@ CREATE TABLE `achats_details` (
 -- Structure de la table `bureaux`
 --
 
+DROP TABLE IF EXISTS `bureaux`;
 CREATE TABLE `bureaux` (
   `id` int(11) NOT NULL,
   `id_service` int(11) NOT NULL,
@@ -67,6 +70,7 @@ CREATE TABLE `bureaux` (
 -- Structure de la table `categories`
 --
 
+DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `nom` varchar(100) NOT NULL,
@@ -79,6 +83,7 @@ CREATE TABLE `categories` (
 -- Structure de la table `decharges`
 --
 
+DROP TABLE IF EXISTS `decharges`;
 CREATE TABLE `decharges` (
   `id` int(11) NOT NULL,
   `num_decharge` varchar(50) NOT NULL,
@@ -92,6 +97,7 @@ CREATE TABLE `decharges` (
 -- Structure de la table `decharges_details`
 --
 
+DROP TABLE IF EXISTS `decharges_details`;
 CREATE TABLE `decharges_details` (
   `id` int(11) NOT NULL,
   `id_decharge` int(11) NOT NULL,
@@ -105,6 +111,7 @@ CREATE TABLE `decharges_details` (
 -- Structure de la table `fournisseurs`
 --
 
+DROP TABLE IF EXISTS `fournisseurs`;
 CREATE TABLE `fournisseurs` (
   `id` int(11) NOT NULL,
   `nom` varchar(150) NOT NULL,
@@ -119,9 +126,11 @@ CREATE TABLE `fournisseurs` (
 -- Structure de la table `inventaire`
 --
 
+DROP TABLE IF EXISTS `inventaire`;
 CREATE TABLE `inventaire` (
   `id` int(11) NOT NULL,
-  `id_achats_details` int(11) NOT NULL,
+  `id_achats_details` int(11) DEFAULT NULL,
+  `id_produit` int(11) DEFAULT NULL,
   `inventaire` varchar(30) NOT NULL,
   `sn` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -132,6 +141,7 @@ CREATE TABLE `inventaire` (
 -- Structure de la table `inventaire_etat`
 --
 
+DROP TABLE IF EXISTS `inventaire_etat`;
 CREATE TABLE `inventaire_etat` (
   `id` int(11) NOT NULL,
   `id_inventaire` int(11) NOT NULL,
@@ -145,6 +155,7 @@ CREATE TABLE `inventaire_etat` (
 -- Structure de la table `produits`
 --
 
+DROP TABLE IF EXISTS `produits`;
 CREATE TABLE `produits` (
   `id` int(11) NOT NULL,
   `code` varchar(50) DEFAULT NULL,
@@ -152,7 +163,8 @@ CREATE TABLE `produits` (
   `id_categorie` int(11) NOT NULL,
   `type` enum('consommable','inventoree') NOT NULL,
   `id_unite` int(11) DEFAULT NULL,
-  `stock_initial` decimal(10,2) DEFAULT 0.00
+  `stock_initial` decimal(10,2) DEFAULT 0.00,
+  `prix_achat` decimal(10,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -161,6 +173,7 @@ CREATE TABLE `produits` (
 -- Structure de la table `services`
 --
 
+DROP TABLE IF EXISTS `services`;
 CREATE TABLE `services` (
   `id` int(11) NOT NULL,
   `nom` varchar(100) NOT NULL
@@ -172,6 +185,7 @@ CREATE TABLE `services` (
 -- Structure de la table `unites`
 --
 
+DROP TABLE IF EXISTS `unites`;
 CREATE TABLE `unites` (
   `id` int(11) NOT NULL,
   `nom` varchar(50) NOT NULL
@@ -183,6 +197,7 @@ CREATE TABLE `unites` (
 -- Structure de la table `utilisateurs`
 --
 
+DROP TABLE IF EXISTS `utilisateurs`;
 CREATE TABLE `utilisateurs` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
@@ -245,7 +260,8 @@ ALTER TABLE `fournisseurs`
 --
 ALTER TABLE `inventaire`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_id_achats_details` (`id_achats_details`);
+  ADD KEY `idx_id_achats_details` (`id_achats_details`),
+  ADD KEY `fk_inventaire_produit` (`id_produit`);
 
 --
 -- Index pour la table `inventaire_etat`
@@ -381,7 +397,8 @@ ALTER TABLE `decharges_details`
 -- Contraintes pour la table `inventaire`
 --
 ALTER TABLE `inventaire`
-  ADD CONSTRAINT `fk_inventaire_achats_details` FOREIGN KEY (`id_achats_details`) REFERENCES `achats_details` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_inventaire_achats_details` FOREIGN KEY (`id_achats_details`) REFERENCES `achats_details` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_inventaire_produit` FOREIGN KEY (`id_produit`) REFERENCES `produits` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `inventaire_etat`
