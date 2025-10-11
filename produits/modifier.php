@@ -62,17 +62,18 @@ if (isset($_POST['edit_produit'])) {
         $error_msg = "Veuillez saisir un prix d'achat pour les produits avec un stock initial.";
     }
 
-    // === Vérifier si le stock_initial a été modifié et si un bon STOCK_INITIAL existe ===
+    // === Vérifier si le stock_initial a été modifié et si un bon STOCK_INITIAL{id_produit} existe ===
     if (empty($error_msg)) {
         $ancien_stock = floatval($prod['stock_initial']);
         if ($stock_initial != $ancien_stock) {
-            $checkAchat = $pdo->prepare("SELECT COUNT(*) FROM achats WHERE num_achat = 'STOCK_INITIAL'");
-            $checkAchat->execute();
+            $num_achat_check = 'STOCK_INITIAL' . $id;
+            $checkAchat = $pdo->prepare("SELECT COUNT(*) FROM achats WHERE num_achat = ?");
+            $checkAchat->execute([$num_achat_check]);
             $achatExiste = $checkAchat->fetchColumn();
 
             if ($achatExiste > 0) {
-                $error_msg = "⚠️ Impossible de modifier le stock initial : 
-                le bon d'achat STOCK_INITIAL existe déjà dans l'historique. 
+                $error_msg = "⚠️ Impossible de modifier le stock initial :
+                le bon d'achat " . $num_achat_check . " existe déjà dans l'historique.
                 Veuillez le supprimer avant de modifier le stock initial.";
             }
         }
@@ -88,8 +89,9 @@ if (isset($_POST['edit_produit'])) {
                 WHERE id = ?");
             $stmt->execute([$code, $nom, $id_categorie, $type, $id_unite, $stock_initial, $prix_achat, $id]);
 
-            // Si stock_initial > 0, on s'assure qu'il existe un bon d'achat STOCK_INITIAL
+            // Si stock_initial > 0, on s'assure qu'il existe un bon d'achat STOCK_INITIAL{id_produit}
             if ($stock_initial > 0) {
+                // Vérifier ou créer fournisseur
                 $stmtF = $pdo->prepare("SELECT id FROM fournisseurs WHERE nom = 'stock_initial'");
                 $stmtF->execute();
                 $id_fournisseur = $stmtF->fetchColumn();
@@ -98,11 +100,15 @@ if (isset($_POST['edit_produit'])) {
                     $id_fournisseur = $pdo->lastInsertId();
                 }
 
-                $stmtA = $pdo->prepare("SELECT id FROM achats WHERE num_achat = 'STOCK_INITIAL'");
-                $stmtA->execute();
+                // ✅ Création / vérification du bon d'achat unique par produit
+                $num_achat = 'STOCK_INITIAL' . $id;
+                $stmtA = $pdo->prepare("SELECT id FROM achats WHERE num_achat = ?");
+                $stmtA->execute([$num_achat]);
                 $id_achat = $stmtA->fetchColumn();
+
                 if (!$id_achat) {
-                    $pdo->prepare("INSERT INTO achats (num_achat, date, id_fournisseur) VALUES ('STOCK_INITIAL', NOW(), ?)")->execute([$id_fournisseur]);
+                    $pdo->prepare("INSERT INTO achats (num_achat, date, id_fournisseur) VALUES (?, NOW(), ?)")
+                         ->execute([$num_achat, $id_fournisseur]);
                     $id_achat = $pdo->lastInsertId();
                 }
 
@@ -119,7 +125,7 @@ if (isset($_POST['edit_produit'])) {
                         ->execute([$id_achat, $id, $prix_achat, $stock_initial]);
                 }
 
-                // Mettre le stock_initial du produit à 0 (comme logique d'import initial)
+                // Mettre le stock_initial du produit à 0 après création du bon
                 $pdo->prepare("UPDATE produits SET stock_initial = 0 WHERE id = ?")->execute([$id]);
             }
 

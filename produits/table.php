@@ -72,15 +72,19 @@ if (isset($_POST['add_produit'])) {
                     $id_fournisseur = $pdo->lastInsertId();
                 }
 
-                // Vérifier ou créer le bon d'achat STOCK_INITIAL
-                $stmtA = $pdo->prepare("SELECT id FROM achats WHERE num_achat = 'STOCK_INITIAL'");
-                $stmtA->execute();
+                // ✅ Vérifier ou créer le bon d'achat STOCK_INITIAL spécifique à chaque produit
+                $num_achat = 'STOCK_INITIAL' . $id_produit;
+
+                $stmtA = $pdo->prepare("SELECT id FROM achats WHERE num_achat = ?");
+                $stmtA->execute([$num_achat]);
                 $id_achat = $stmtA->fetchColumn();
 
                 if (!$id_achat) {
-                    $pdo->prepare("INSERT INTO achats (num_achat, date, id_fournisseur) VALUES ('STOCK_INITIAL', NOW(), ?)")->execute([$id_fournisseur]);
+                    $pdo->prepare("INSERT INTO achats (num_achat, date, id_fournisseur) VALUES (?, NOW(), ?)")
+                         ->execute([$num_achat, $id_fournisseur]);
                     $id_achat = $pdo->lastInsertId();
                 }
+
 
                 // Insérer dans achats_details
                 $stmtD = $pdo->prepare("INSERT INTO achats_details (id_achat, id_produit, prix_achat, quantite) VALUES (?,?,?,?)");
@@ -192,7 +196,7 @@ require_once("../includes/sidebar.php");
                 </div>
                 <div class="col-md-6">
                     <label>Nom</label>
-                    <input type="text" name="nom" class="form-control" required>
+                    <input type="text" name="nom" class="form-control" required autocomplete="off">
                 </div>
 
                 <div class="col-md-6">
