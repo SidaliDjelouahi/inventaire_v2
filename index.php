@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 include "includes/db.php"; // connexion à la base de données
 
@@ -78,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <form method="POST" action="">
             <div class="mb-3">
                 <label for="username" class="form-label">Nom d'utilisateur</label>
-                <input type="text" name="username" id="username" class="form-control" required autofocus>
+                <input type="text" name="username" id="username" class="form-control" required autofocus autocomplete="off">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Mot de passe</label>
