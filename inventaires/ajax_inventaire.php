@@ -65,3 +65,7 @@ if (count($rows) > 0):
 else: ?>
     <tr><td colspan="5" class="text-center">Aucun enregistrement trouvé</td></tr>
 <?php endif; 
+
+
+
+

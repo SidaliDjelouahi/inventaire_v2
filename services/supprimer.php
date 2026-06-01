@@ -16,3 +16,7 @@ $stmt->execute([$id]);
 
 header("Location: table.php");
 exit;
+
+
+
+

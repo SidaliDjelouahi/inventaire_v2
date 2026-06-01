@@ -38,3 +38,7 @@ require_once "includes/sidebar.php";
 // Inclure footer
 require_once "includes/footer.php";
 ?>
+
+
+
+

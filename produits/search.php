@@ -33,3 +33,7 @@ if ($produits) {
 } else {
     echo "<tr><td colspan='8' class='text-center'>Aucun produit trouvé</td></tr>";
 }
+
+
+
+

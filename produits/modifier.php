@@ -227,3 +227,7 @@ document.getElementById('stock_initial').addEventListener('input', function() {
 </script>
 
 <?php require_once("../includes/footer.php"); ?>
+
+
+
+

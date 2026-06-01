@@ -47,3 +47,7 @@ try {
     $pdo->rollBack();
     die("Erreur suppression : " . $e->getMessage());
 }
+
+
+
+

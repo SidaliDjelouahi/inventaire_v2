@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagnostic Inventaire v2</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/inventaire_v2/includes/bootstrap/bootstrap.min.css" rel="stylesheet">
     <style>
         body { padding: 20px; }
         .ok { color: #28a745; font-weight: bold; }
@@ -75,3 +75,7 @@
     </div>
 </body>
 </html>
+
+
+
+

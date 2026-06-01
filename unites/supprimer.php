@@ -29,3 +29,7 @@ $stmt->execute([$id]);
 // Redirection vers la liste après suppression
 header("Location: " . ROOT_URL . "/unites/table.php");
 exit;
+
+
+
+

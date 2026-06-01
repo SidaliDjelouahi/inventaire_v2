@@ -43,7 +43,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/inventaire_v2/includes/bootstrap/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/inventaire_v2/manifest.json">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Inventaire">
     <style>
         body {
             display: flex;
@@ -93,6 +102,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/inventaire_v2/includes/jquery/jquery-3.6.4.min.js"></script>
+    <script src="/inventaire_v2/includes/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="/inventaire_v2/pwa-install.js"></script>
 </body>
 </html>
+
+
+
+

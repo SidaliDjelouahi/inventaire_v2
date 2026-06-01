@@ -90,8 +90,8 @@ if ($id_produit > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/inventaire_v2/includes/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/inventaire_v2/includes/bootstrap/bootstrap-icons.css" rel="stylesheet">
     <title>Fiche Inventaire</title>
 </head>
 <body>
@@ -176,7 +176,7 @@ if ($id_produit > 0) {
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/inventaire_v2/includes/bootstrap/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search_produit');
@@ -220,3 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
+
+
+

@@ -60,3 +60,7 @@ try {
     die("Erreur lors de la suppression : " . $e->getMessage());
 }
 ?>
+
+
+
+

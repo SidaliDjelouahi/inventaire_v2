@@ -43,3 +43,7 @@ if ($categories) {
 } else {
     echo '<tr><td colspan="4" class="text-center">Aucune catégorie trouvée</td></tr>';
 }
+
+
+
+

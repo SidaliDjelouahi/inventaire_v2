@@ -44,8 +44,8 @@ if ($type_produit === 'inventoree' && $nbInv > 0 && !isset($_POST['confirm_suppr
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Suppression produit</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+        <link href="/inventaire_v2/includes/bootstrap/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/inventaire_v2/includes/bootstrap/bootstrap-icons.css">
     </head>
     <body class="bg-light">
     <?php include("../includes/header.php"); ?>
@@ -108,3 +108,7 @@ try {
     $pdo->rollBack();
     die("Erreur suppression : ".$e->getMessage());
 }
+
+
+
+

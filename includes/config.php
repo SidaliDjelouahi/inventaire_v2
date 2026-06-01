@@ -6,3 +6,7 @@ if (!defined('ROOT_PATH')) {
 if (!defined('ROOT_URL')) {
     define('ROOT_URL', '/inventaire_v2'); // ou ton URL exacte
 }
+
+
+
+

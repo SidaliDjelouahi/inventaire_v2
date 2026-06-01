@@ -272,3 +272,7 @@ stockInput.addEventListener('input', function() {
 </script>
 
 <?php require_once("../includes/footer.php"); ?>
+
+
+
+

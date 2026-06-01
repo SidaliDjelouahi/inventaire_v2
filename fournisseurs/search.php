@@ -42,3 +42,7 @@ if ($fournisseurs) {
 } else {
     echo '<tr><td colspan="6" class="text-center">Aucun fournisseur trouvé</td></tr>';
 }
+
+
+
+

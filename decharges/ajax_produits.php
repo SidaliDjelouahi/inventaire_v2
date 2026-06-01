@@ -48,3 +48,7 @@ foreach ($produits as $p) {
 
 header('Content-Type: application/json');
 echo json_encode($result);
+
+
+
+

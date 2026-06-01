@@ -39,3 +39,7 @@ if ($bureaux) {
 } else {
     echo '<tr><td colspan="4" class="text-center">Aucun bureau trouvé</td></tr>';
 }
+
+
+
+
